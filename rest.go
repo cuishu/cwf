@@ -12,13 +12,13 @@ type ControllerInterface interface {
 
 type Controller struct{}
 
-func (c *Controller) GET(ctx *Context)     { ctx.String(200, "") }
-func (c *Controller) POST(ctx *Context)    { ctx.String(500, "") }
-func (c *Controller) PUT(ctx *Context)     { ctx.String(200, "") }
-func (c *Controller) DELETE(ctx *Context)  { ctx.String(200, "") }
-func (c *Controller) TRACE(ctx *Context)   { ctx.String(200, "") }
-func (c *Controller) OPTIONS(ctx *Context) { ctx.String(200, "") }
-func (c *Controller) HEAD(ctx *Context)    { ctx.String(200, "") }
+func (c *Controller) GET(ctx *Context)     { ctx.Page404(ctx) }
+func (c *Controller) POST(ctx *Context)    { ctx.Page404(ctx) }
+func (c *Controller) PUT(ctx *Context)     { ctx.Page404(ctx) }
+func (c *Controller) DELETE(ctx *Context)  { ctx.Page404(ctx) }
+func (c *Controller) TRACE(ctx *Context)   { ctx.Page404(ctx) }
+func (c *Controller) OPTIONS(ctx *Context) { ctx.Page404(ctx) }
+func (c *Controller) HEAD(ctx *Context)    { ctx.Page404(ctx) }
 
 func (c *CWF) REST(url string, rest ControllerInterface) {
 	c.GET(url, rest.GET)

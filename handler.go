@@ -27,10 +27,22 @@ type route struct {
 
 type Handler struct {
 	routerMap map[string]route
+	Page404   func(*Context)
+	Page500   func(*Context)
+}
+
+func page404(ctx *Context) {
+	ctx.String(404, "404 Not Found.")
+}
+
+func page500(ctx *Context) {
+	ctx.String(500, "500 Internal Server Error.")
 }
 
 func NewHandler() *Handler {
 	handler := &Handler{}
+	handler.Page404 = page404
+	handler.Page500 = page500
 	handler.routerMap = make(map[string]route)
 	return handler
 }
@@ -38,7 +50,7 @@ func NewHandler() *Handler {
 func (h *Handler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	url := req.URL.Path
 	startTime := time.Now()
-	ctx := &Context{Response: res, Request: req}
+	ctx := &Context{Response: res, Request: req, Page404: h.Page404, Page500: h.Page500}
 	r := h.routerMap[url]
 	var f func(ctx *Context)
 	switch req.Method {
@@ -60,7 +72,7 @@ func (h *Handler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	if f != nil {
 		f(ctx)
 	} else {
-		ctx.String(404, "not found.")
+		h.Page404(ctx)
 	}
 	var statusColor string
 	if ctx.StatusCode < 400 {
